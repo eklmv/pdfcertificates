@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS template (
     template_id serial PRIMARY KEY,
-    content text NOT NULL
+    content text NOT NULL CHECK (content != '')
 );
 
 CREATE TABLE IF NOT EXISTS course (
