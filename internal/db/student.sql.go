@@ -11,7 +11,7 @@ import (
 
 const createStudent = `-- name: CreateStudent :one
 INSERT INTO student (data)
-VALUES ($1)
+VALUES (coalesce($1, '{}'::jsonb))
 RETURNING student_id, data
 `
 
@@ -81,7 +81,7 @@ func (q *Queries) ListStudents(ctx context.Context, db DBTX, arg ListStudentsPar
 
 const updateStudent = `-- name: UpdateStudent :one
 UPDATE student
-SET data = $2
+SET data = coalesce($2, '{}'::jsonb)
 WHERE student_id = $1
 RETURNING student_id, data
 `

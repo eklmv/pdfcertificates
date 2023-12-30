@@ -1,6 +1,6 @@
 -- name: CreateCourse :one
 INSERT INTO course (data)
-VALUES ($1)
+VALUES (coalesce(sqlc.narg(data), '{}'::jsonb))
 RETURNING *;
 
 -- name: GetCourse :one
@@ -15,7 +15,7 @@ LIMIT $1 OFFSET $2;
 
 -- name: UpdateCourse :one
 UPDATE course
-SET data = $2
+SET data = coalesce(sqlc.narg(data), '{}'::jsonb)
 WHERE course_id = $1
 RETURNING *;
 

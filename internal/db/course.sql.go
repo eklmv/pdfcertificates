@@ -11,7 +11,7 @@ import (
 
 const createCourse = `-- name: CreateCourse :one
 INSERT INTO course (data)
-VALUES ($1)
+VALUES (coalesce($1, '{}'::jsonb))
 RETURNING course_id, data
 `
 
@@ -81,7 +81,7 @@ func (q *Queries) ListCourses(ctx context.Context, db DBTX, arg ListCoursesParam
 
 const updateCourse = `-- name: UpdateCourse :one
 UPDATE course
-SET data = $2
+SET data = coalesce($2, '{}'::jsonb)
 WHERE course_id = $1
 RETURNING course_id, data
 `

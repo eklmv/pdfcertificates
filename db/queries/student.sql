@@ -1,6 +1,6 @@
 -- name: CreateStudent :one
 INSERT INTO student (data)
-VALUES ($1)
+VALUES (coalesce(sqlc.narg(data), '{}'::jsonb))
 RETURNING *;
 
 -- name: GetStudent :one
@@ -15,7 +15,7 @@ LIMIT $1 OFFSET $2;
 
 -- name: UpdateStudent :one
 UPDATE student
-SET data = $2
+SET data = coalesce(sqlc.narg(data), '{}'::jsonb)
 WHERE student_id = $1
 RETURNING *;
 

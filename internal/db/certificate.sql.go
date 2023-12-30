@@ -11,7 +11,7 @@ import (
 
 const createCertificate = `-- name: CreateCertificate :one
 INSERT INTO certificate (template_id, course_id, student_id, data)
-VALUES ($1, $2, $3, $4)
+VALUES ($1, $2, $3, coalesce($4, '{}'::jsonb))
 RETURNING certificate_id, template_id, course_id, student_id, timestamp, data
 `
 
@@ -241,7 +241,7 @@ func (q *Queries) ListCertificatesByTemplate(ctx context.Context, db DBTX, arg L
 
 const updateCertificate = `-- name: UpdateCertificate :one
 UPDATE certificate
-SET data = $2
+SET data = coalesce($2, '{}'::jsonb)
 WHERE certificate_id = $1
 RETURNING certificate_id, template_id, course_id, student_id, timestamp, data
 `

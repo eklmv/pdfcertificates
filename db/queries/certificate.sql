@@ -1,6 +1,6 @@
 -- name: CreateCertificate :one
 INSERT INTO certificate (template_id, course_id, student_id, data)
-VALUES ($1, $2, $3, $4)
+VALUES ($1, $2, $3, coalesce(sqlc.narg(data), '{}'::jsonb))
 RETURNING *;
 
 -- name: GetCertificate :one
@@ -33,7 +33,7 @@ LIMIT $2 OFFSET $3;
 
 -- name: UpdateCertificate :one
 UPDATE certificate
-SET data = $2
+SET data = coalesce(sqlc.narg(data), '{}'::jsonb)
 WHERE certificate_id = $1
 RETURNING *;
 
