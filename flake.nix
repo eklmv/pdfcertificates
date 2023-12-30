@@ -20,7 +20,7 @@
     {
       devShells = forEachSupportedSystem ({ pkgs }: {
         default =
-          pkgs.mkShell { packages = with pkgs; [ go gotools gopls gnumake go-migrate ]; };
+          pkgs.mkShell { packages = with pkgs; [ go gotools gopls gnumake go-migrate sqlc ]; };
       });
     };
 }

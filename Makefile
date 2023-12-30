@@ -4,7 +4,7 @@ db_test_port = 5432
 db_test_user = postgres
 db_test_password = secret
 db_test_name = test_cert
-db_test_url = "postgres://${db_test_user}:${db_test_password}@127.0.0.1:${db_test_port}/${db_test_name}?sslmode=disable"
+export DB_TEST_URL = postgres://${db_test_user}:${db_test_password}@127.0.0.1:${db_test_port}/${db_test_name}?sslmode=disable
 
 .PHONY: docker.db.create
 .ONESHELL:
@@ -73,8 +73,12 @@ migrate.create: docker.db.up db.is_ready db.create
 
 .PHONY: migrate.up
 migrate.up: docker.db.up db.is_ready db.create
-	@migrate -path db/migrations -database ${db_test_url} up
+	@migrate -path db/migrations -database ${DB_TEST_URL} up
 
 .PHONY: migrate.down
 migrate.down: docker.db.up db.is_ready db.create
-	@migrate -path db/migrations -database ${db_test_url} down -all
+	@migrate -path db/migrations -database ${DB_TEST_URL} down -all
+
+.PHONY: sqlc
+sqlc: migrate.up
+	sqlc generate -f db/sqlc.yaml

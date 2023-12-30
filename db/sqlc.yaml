@@ -1,0 +1,14 @@
+version: "2"
+sql:
+  - schema: "migrations"
+    queries: "queries"
+    engine: "postgresql"
+    database:
+      uri: ${DB_TEST_URL}
+    gen:
+      go:
+        package: db
+        out: ../internal/db
+        sql_package: pgx/v5
+        emit_methods_with_db_argument: true
+        emit_interface: true
