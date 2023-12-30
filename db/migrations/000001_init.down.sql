@@ -1,0 +1,12 @@
+DROP TRIGGER IF EXISTS update_timestamp ON template;
+DROP TRIGGER IF EXISTS update_timestamp ON course;
+DROP TRIGGER IF EXISTS update_timestamp ON student;
+DROP TRIGGER IF EXISTS update_timestamp ON certificate;
+DROP FUNCTION IF EXISTS update_timestamp;
+DROP TRIGGER IF EXISTS gen_id ON certificate;
+DROP FUNCTION IF EXISTS gen_id;
+DROP EXTENSION IF EXISTS pgcrypto;
+DROP TABLE IF EXISTS certificate;
+DROP TABLE IF EXISTS student;
+DROP TABLE IF EXISTS course;
+DROP TABLE IF EXISTS template;

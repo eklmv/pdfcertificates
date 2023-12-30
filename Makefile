@@ -4,6 +4,7 @@ db_test_port = 5432
 db_test_user = postgres
 db_test_password = secret
 db_test_name = test_cert
+db_test_url = "postgres://${db_test_user}:${db_test_password}@127.0.0.1:${db_test_port}/${db_test_name}?sslmode=disable"
 
 .PHONY: docker.db.create
 .ONESHELL:
@@ -45,7 +46,7 @@ db.is_ready:
 .ONESHELL:
 db.create: docker.db.up db.is_ready
 	@if docker exec ${db_test_container} sh -c "psql -U ${db_test_user} -lqt | cut -d \| -f 1 | grep -qw ${db_test_name}"; then
-		echo "${db_test_name} database arleady exists"
+		echo "${db_test_name} database already exists"
 	else
 		docker exec ${db_test_container} createdb --username=${db_test_user} ${db_test_name}
 		echo "${db_test_name} database created"
@@ -54,8 +55,26 @@ db.create: docker.db.up db.is_ready
 .PHONY: db.drop
 db.drop: docker.db.up db.is_ready
 	@docker exec ${db_test_container} dropdb --username=${db_test_user} ${db_test_name}
-	echo "${db_test_name} database droped"
+	echo "${db_test_name} database dropped"
 
 .PHONY: psql
 psql: docker.db.up db.is_ready db.create
 	@docker exec -it ${db_test_container} psql -U ${db_test_user} ${db_test_name}
+
+.PHONY: migrate.create
+ONESHELL:
+migrate.create: docker.db.up db.is_ready db.create
+	@if [ -z $(n) ]; then
+		echo "migrate.create require argument 'n' (name) to be set"
+		exit 1
+	else
+		migrate create -ext sql -dir db/migrations -seq $(n)
+	fi
+
+.PHONY: migrate.up
+migrate.up: docker.db.up db.is_ready db.create
+	@migrate -path db/migrations -database ${db_test_url} up
+
+.PHONY: migrate.down
+migrate.down: docker.db.up db.is_ready db.create
+	@migrate -path db/migrations -database ${db_test_url} down -all
