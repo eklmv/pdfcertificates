@@ -1,2 +1,4 @@
 # ignore direnv cache
 .direnv/
+
+out/

@@ -20,7 +20,14 @@
     {
       devShells = forEachSupportedSystem ({ pkgs }: {
         default =
-          pkgs.mkShell { packages = with pkgs; [ go gotools gopls gnumake go-migrate sqlc ]; };
+          pkgs.mkShell {
+            NIX_HARDENING_ENABLE = "";
+            packages = with pkgs; [ go gotools gopls gnumake go-migrate sqlc ];
+          };
+        test =
+          pkgs.mkShell {
+            packages = with pkgs; [ go gnumake go-migrate ];
+          };
       });
     };
 }
