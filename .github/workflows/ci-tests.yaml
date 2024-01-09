@@ -1,0 +1,69 @@
+name: Github CI Tests
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+jobs:
+  test_env:
+    runs-on: ubuntu-latest
+    outputs:
+      json: ${{ toJSON(steps.export.outputs) }}
+    steps:
+      - name: checkout test.env
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            test/test.env
+      - name: read test env
+        uses: cardinalby/export-env-action@v2
+        id: export
+        with:
+          envFile: test/test.env
+          export: false
+  tests:
+    needs: test_env
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: ${{ fromJSON(needs.test_env.outputs.json).DB_IMAGE }}
+        env:
+          POSTGRES_USER: ${{ fromJSON(needs.test_env.outputs.json).DB_TEST_USER }}
+          POSTGRES_PASSWORD: ${{ fromJSON(needs.test_env.outputs.json).DB_TEST_PASSWORD }}
+          POSTGRES_DB: ${{ fromJSON(needs.test_env.outputs.json).DB_TEST_NAME }}
+        ports:
+          - ${{ fromJSON(needs.test_env.outputs.json).DB_TEST_PORT }}:5432
+        options: >-
+          --health-cmd "pg_isready -h 127.0.0.1
+          -d ${{ fromJSON(needs.test_env.outputs.json).DB_TEST_NAME }}
+          -U ${{ fromJSON(needs.test_env.outputs.json).DB_TEST_USER }}"
+          --health-interval 1s
+          --health-timeout 1s
+          --health-retries 10
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: install nix
+        uses: DeterminateSystems/nix-installer-action@main
+      - name: cache nix
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: cache go modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: start test shell
+        uses: nicknovitski/nix-develop@v1
+        with:
+          arguments: ".#test"
+      - name: read test env
+        uses: cardinalby/export-env-action@v2
+        with:
+          envFile: test/test.env
+          export: true
+          expand: true
+      - name: db integration tests
+        run: make -t test.it.db.all
