@@ -144,6 +144,22 @@ func TestListCertificates(t *testing.T) {
 	assert.ElementsMatch(t, exp, got)
 }
 
+func TestListCertificatesLen(t *testing.T) {
+	t.Parallel()
+	db := migrateUp(t)
+
+	maxAmount := 10
+	exp := rand.Intn(maxAmount) + 1
+	for i := 0; i < exp; i++ {
+		_ = randomCertificate(t, db)
+	}
+
+	got, err := New().ListCertificatesLen(context.Background(), db)
+
+	require.NoError(t, err)
+	assert.Equal(t, int64(exp), got)
+}
+
 func TestListCertificatesByCourse(t *testing.T) {
 	t.Parallel()
 	db := migrateUp(t)
@@ -168,6 +184,26 @@ func TestListCertificatesByCourse(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotEmpty(t, got)
 	assert.ElementsMatch(t, exp, got)
+}
+
+func TestListCertificatesByCourseLen(t *testing.T) {
+	t.Parallel()
+	db := migrateUp(t)
+
+	maxAmount := 10
+	exp := rand.Intn(maxAmount) + 1
+	p := prepareCreateCertificateParams(t, db)
+	for i := 0; i < exp; i++ {
+		p.Data = randomData(t)
+		c, err := New().CreateCertificate(context.Background(), db, p)
+		require.NoError(t, err)
+		require.NotEmpty(t, c)
+		randomCertificate(t, db)
+	}
+	got, err := New().ListCertificatesByCourseLen(context.Background(), db, p.CourseID)
+
+	require.NoError(t, err)
+	assert.Equal(t, int64(exp), got)
 }
 
 func TestListCertificatesByStudent(t *testing.T) {
@@ -196,6 +232,26 @@ func TestListCertificatesByStudent(t *testing.T) {
 	assert.ElementsMatch(t, exp, got)
 }
 
+func TestListCertificatesByStudentLen(t *testing.T) {
+	t.Parallel()
+	db := migrateUp(t)
+
+	maxAmount := 10
+	exp := rand.Intn(maxAmount) + 1
+	p := prepareCreateCertificateParams(t, db)
+	for i := 0; i < exp; i++ {
+		p.Data = randomData(t)
+		c, err := New().CreateCertificate(context.Background(), db, p)
+		require.NoError(t, err)
+		require.NotEmpty(t, c)
+		randomCertificate(t, db)
+	}
+	got, err := New().ListCertificatesByStudentLen(context.Background(), db, p.StudentID)
+
+	require.NoError(t, err)
+	assert.Equal(t, int64(exp), got)
+}
+
 func TestListCertificatesByTemplate(t *testing.T) {
 	t.Parallel()
 	db := migrateUp(t)
@@ -220,6 +276,26 @@ func TestListCertificatesByTemplate(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotEmpty(t, got)
 	assert.ElementsMatch(t, exp, got)
+}
+
+func TestListCertificatesByTemplateLen(t *testing.T) {
+	t.Parallel()
+	db := migrateUp(t)
+
+	maxAmount := 10
+	exp := rand.Intn(maxAmount) + 1
+	p := prepareCreateCertificateParams(t, db)
+	for i := 0; i < exp; i++ {
+		p.Data = randomData(t)
+		c, err := New().CreateCertificate(context.Background(), db, p)
+		require.NoError(t, err)
+		require.NotEmpty(t, c)
+		randomCertificate(t, db)
+	}
+	got, err := New().ListCertificatesByTemplateLen(context.Background(), db, p.TemplateID)
+
+	require.NoError(t, err)
+	assert.Equal(t, int64(exp), got)
 }
 
 func TestUpdateCertificate(t *testing.T) {

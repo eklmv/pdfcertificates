@@ -79,6 +79,17 @@ func (q *Queries) ListCourses(ctx context.Context, db DBTX, arg ListCoursesParam
 	return items, nil
 }
 
+const listCoursesLen = `-- name: ListCoursesLen :one
+SELECT count(*) FROM course
+`
+
+func (q *Queries) ListCoursesLen(ctx context.Context, db DBTX) (int64, error) {
+	row := db.QueryRow(ctx, listCoursesLen)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const updateCourse = `-- name: UpdateCourse :one
 UPDATE course
 SET data = coalesce($2, '{}'::jsonb)

@@ -13,6 +13,9 @@ SELECT * FROM template
 ORDER BY template_id
 LIMIT $1 OFFSET $2;
 
+-- name: ListTemplatesLen :one
+SELECT count(*) FROM template;
+
 -- name: UpdateTemplate :one
 UPDATE template
 SET content = $2

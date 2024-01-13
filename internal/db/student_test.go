@@ -104,6 +104,24 @@ func TestListStudents(t *testing.T) {
 	assert.ElementsMatch(t, exp, got)
 }
 
+func TestListStudentsLen(t *testing.T) {
+	t.Parallel()
+	db := migrateUp(t)
+
+	maxAmount := 10
+	exp := rand.Intn(maxAmount) + 1
+	for i := 0; i < exp; i++ {
+		course, err := New().CreateStudent(context.Background(), db, randomData(t))
+		require.NoError(t, err)
+		require.NotEmpty(t, course)
+	}
+
+	got, err := New().ListStudentsLen(context.Background(), db)
+
+	require.NoError(t, err)
+	assert.Equal(t, int64(exp), got)
+}
+
 func TestUpdateStudent(t *testing.T) {
 	t.Parallel()
 	db := migrateUp(t)
