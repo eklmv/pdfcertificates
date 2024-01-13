@@ -13,6 +13,9 @@ SELECT * FROM student
 ORDER BY student_id
 LIMIT $1 OFFSET $2;
 
+-- name: ListStudentsLen :one
+SELECT count(*) FROM student;
+
 -- name: UpdateStudent :one
 UPDATE student
 SET data = coalesce(sqlc.narg(data), '{}'::jsonb)

@@ -13,11 +13,18 @@ SELECT * FROM certificate
 ORDER BY certificate_id
 LIMIT $1 OFFSET $2;
 
+-- name: ListCertificatesLen :one
+SELECT count(*) FROM certificate;
+
 -- name: ListCertificatesByTemplate :many
 SELECT * FROM certificate
 WHERE template_id = $1
 ORDER BY certificate_id
 LIMIT $2 OFFSET $3;
+
+-- name: ListCertificatesByTemplateLen :one
+SELECT count(*) FROM certificate
+WHERE template_id = $1;
 
 -- name: ListCertificatesByCourse :many
 SELECT * FROM certificate
@@ -25,11 +32,19 @@ WHERE course_id = $1
 ORDER BY certificate_id
 LIMIT $2 OFFSET $3;
 
+-- name: ListCertificatesByCourseLen :one
+SELECT count(*) FROM certificate
+WHERE course_id = $1;
+
 -- name: ListCertificatesByStudent :many
 SELECT * FROM certificate
 WHERE student_id = $1
 ORDER BY certificate_id
 LIMIT $2 OFFSET $3;
+
+-- name: ListCertificatesByStudentLen :one
+SELECT count(*) FROM certificate
+WHERE student_id = $1;
 
 -- name: UpdateCertificate :one
 UPDATE certificate

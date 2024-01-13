@@ -159,6 +159,18 @@ func (q *Queries) ListCertificatesByCourse(ctx context.Context, db DBTX, arg Lis
 	return items, nil
 }
 
+const listCertificatesByCourseLen = `-- name: ListCertificatesByCourseLen :one
+SELECT count(*) FROM certificate
+WHERE course_id = $1
+`
+
+func (q *Queries) ListCertificatesByCourseLen(ctx context.Context, db DBTX, courseID int32) (int64, error) {
+	row := db.QueryRow(ctx, listCertificatesByCourseLen, courseID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const listCertificatesByStudent = `-- name: ListCertificatesByStudent :many
 SELECT certificate_id, template_id, course_id, student_id, timestamp, data FROM certificate
 WHERE student_id = $1
@@ -199,6 +211,18 @@ func (q *Queries) ListCertificatesByStudent(ctx context.Context, db DBTX, arg Li
 	return items, nil
 }
 
+const listCertificatesByStudentLen = `-- name: ListCertificatesByStudentLen :one
+SELECT count(*) FROM certificate
+WHERE student_id = $1
+`
+
+func (q *Queries) ListCertificatesByStudentLen(ctx context.Context, db DBTX, studentID int32) (int64, error) {
+	row := db.QueryRow(ctx, listCertificatesByStudentLen, studentID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const listCertificatesByTemplate = `-- name: ListCertificatesByTemplate :many
 SELECT certificate_id, template_id, course_id, student_id, timestamp, data FROM certificate
 WHERE template_id = $1
@@ -237,6 +261,29 @@ func (q *Queries) ListCertificatesByTemplate(ctx context.Context, db DBTX, arg L
 		return nil, err
 	}
 	return items, nil
+}
+
+const listCertificatesByTemplateLen = `-- name: ListCertificatesByTemplateLen :one
+SELECT count(*) FROM certificate
+WHERE template_id = $1
+`
+
+func (q *Queries) ListCertificatesByTemplateLen(ctx context.Context, db DBTX, templateID int32) (int64, error) {
+	row := db.QueryRow(ctx, listCertificatesByTemplateLen, templateID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const listCertificatesLen = `-- name: ListCertificatesLen :one
+SELECT count(*) FROM certificate
+`
+
+func (q *Queries) ListCertificatesLen(ctx context.Context, db DBTX) (int64, error) {
+	row := db.QueryRow(ctx, listCertificatesLen)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
 }
 
 const updateCertificate = `-- name: UpdateCertificate :one

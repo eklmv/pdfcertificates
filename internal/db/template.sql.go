@@ -79,6 +79,17 @@ func (q *Queries) ListTemplates(ctx context.Context, db DBTX, arg ListTemplatesP
 	return items, nil
 }
 
+const listTemplatesLen = `-- name: ListTemplatesLen :one
+SELECT count(*) FROM template
+`
+
+func (q *Queries) ListTemplatesLen(ctx context.Context, db DBTX) (int64, error) {
+	row := db.QueryRow(ctx, listTemplatesLen)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const updateTemplate = `-- name: UpdateTemplate :one
 UPDATE template
 SET content = $2

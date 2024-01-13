@@ -104,6 +104,24 @@ func TestListTemplates(t *testing.T) {
 	assert.ElementsMatch(t, exp, got)
 }
 
+func TestListTemplatesLen(t *testing.T) {
+	t.Parallel()
+	db := migrateUp(t)
+
+	maxAmount := 10
+	exp := rand.Intn(maxAmount) + 1
+	for i := 0; i < exp; i++ {
+		tmpl, err := New().CreateTemplate(context.Background(), db, randomContent(t))
+		require.NoError(t, err)
+		require.NotEmpty(t, tmpl)
+	}
+
+	got, err := New().ListTemplatesLen(context.Background(), db)
+
+	require.NoError(t, err)
+	assert.Equal(t, int64(exp), got)
+}
+
 func TestUpdateTemplate(t *testing.T) {
 	t.Parallel()
 	db := migrateUp(t)
