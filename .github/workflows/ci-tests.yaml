@@ -65,5 +65,7 @@ jobs:
           envFile: test/test.env
           export: true
           expand: true
+      - name: unit tests
+        run: make test.unit.all
       - name: db integration tests
         run: make -t test.it.db.all
