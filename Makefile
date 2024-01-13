@@ -13,7 +13,7 @@ docker.db.create:
 		docker create --name ${DB_TEST_CONTAINER} -p ${DB_TEST_PORT}:5432  -e POSTGRES_PASSWORD=${DB_TEST_PASSWORD} -e POSTGRES_USER=${DB_TEST_USER} ${DB_IMAGE} >/dev/null \
 		&& echo "${DB_TEST_CONTAINER} container created"
 	else
-		echo "${DB_TEST_CONTAINER} container already exits"
+		echo "${DB_TEST_CONTAINER} container already exists"
 	fi
 
 .PHONY: docker.db.rm
@@ -90,6 +90,20 @@ test.cover: docker.db.up db.is_ready
 .PHONY: test.cover.html
 test.cover.html:
 	go tool cover -html out/coverage.out
+
+.PHONY: test.unit.all
+test.unit.all:
+	go test ./...
+
+.PHONY: test.unit
+test.unit:
+	if [ -z $(run) ]; then
+		echo "test.unit require argument 'run' to be set"
+		exit 1
+	else
+		go test ./... -run=$(run)
+	fi
+
 
 .PHONY: test.it.db.all
 test.it.db.all: docker.db.up db.is_ready
