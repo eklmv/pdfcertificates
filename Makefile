@@ -93,7 +93,7 @@ test.cover.html:
 
 .PHONY: test.unit.all
 test.unit.all:
-	go test ./...
+	go test ./... -timeout 30s
 
 .PHONY: test.unit
 test.unit:
@@ -101,7 +101,7 @@ test.unit:
 		echo "test.unit require argument 'run' to be set"
 		exit 1
 	else
-		go test ./... -run=$(run)
+		go test ./... -timeout 30s -run=$(run)
 	fi
 
 
@@ -117,3 +117,7 @@ test.it.db: docker.db.up db.is_ready
 	else
 		go test -count 1 -tags integration ./internal/db -run=$(run)
 	fi
+
+.PHONY: mock
+mock:
+	mockery --config test/mockery.yaml

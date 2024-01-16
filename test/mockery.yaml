@@ -1,0 +1,9 @@
+quiet: true
+dir: "{{.InterfaceDir}}"
+filename: "{{lower .InterfaceName}}_mock_test.go"
+inpackage: true
+with-expecter: true
+packages:
+  github.com/eklmv/pdfcertificates/internal/db:
+    interfaces:
+      Querier:

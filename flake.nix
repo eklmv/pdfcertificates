@@ -22,7 +22,7 @@
         default =
           pkgs.mkShell {
             NIX_HARDENING_ENABLE = "";
-            packages = with pkgs; [ go gotools gopls gnumake go-migrate sqlc ];
+            packages = with pkgs; [ go gotools gopls gnumake go-migrate sqlc go-mockery ];
           };
         test =
           pkgs.mkShell {
