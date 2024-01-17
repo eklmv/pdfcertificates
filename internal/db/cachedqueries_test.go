@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"testing"
 	"time"
 	"unsafe"
@@ -47,9 +48,13 @@ func TestCachedQueriesCreateCertificate(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, exp, got)
+		m.AssertExpectations(t)
+
+		hash, hErr := cache.HashString(CERTIFICATE.String() + exp.CertificateID)
+		require.NoError(t, hErr)
+		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.CertificateID)), c.Size())
-		m.AssertExpectations(t)
 	})
 }
 
@@ -67,9 +72,13 @@ func TestCachedQueriesCreateCourse(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, exp, got)
+		m.AssertExpectations(t)
+
+		hash, hErr := cache.HashString(COURSE.String() + strconv.Itoa(int(exp.CourseID)))
+		require.NoError(t, hErr)
+		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
-		m.AssertExpectations(t)
 	})
 }
 
@@ -87,9 +96,13 @@ func TestCachedQueriesCreateStudent(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, exp, got)
+		m.AssertExpectations(t)
+
+		hash, hErr := cache.HashString(STUDENT.String() + strconv.Itoa(int(exp.StudentID)))
+		require.NoError(t, hErr)
+		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
-		m.AssertExpectations(t)
 	})
 }
 
@@ -107,9 +120,13 @@ func TestCachedQueriesCreateTemplate(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, exp, got)
+		m.AssertExpectations(t)
+
+		hash, hErr := cache.HashString(TEMPLATE.String() + strconv.Itoa(int(exp.TemplateID)))
+		require.NoError(t, hErr)
+		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Content)), c.Size())
-		m.AssertExpectations(t)
 	})
 }
 
@@ -389,9 +406,13 @@ func TestCachedQueriesGetCertificate(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, exp, got)
+		m.AssertExpectations(t)
+
+		hash, hErr := cache.HashString(CERTIFICATE.String() + exp.CertificateID)
+		require.NoError(t, hErr)
+		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.CertificateID)), c.Size())
-		m.AssertExpectations(t)
 	})
 }
 
@@ -426,9 +447,13 @@ func TestCachedQueriesGetCourse(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, exp, got)
+		m.AssertExpectations(t)
+
+		hash, hErr := cache.HashString(COURSE.String() + strconv.Itoa(int(exp.CourseID)))
+		require.NoError(t, hErr)
+		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
-		m.AssertExpectations(t)
 	})
 }
 
@@ -463,9 +488,13 @@ func TestCachedQueriesGetStudent(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, exp, got)
+		m.AssertExpectations(t)
+
+		hash, hErr := cache.HashString(STUDENT.String() + strconv.Itoa(int(exp.StudentID)))
+		require.NoError(t, hErr)
+		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
-		m.AssertExpectations(t)
 	})
 }
 
@@ -500,9 +529,13 @@ func TestCachedQueriesGetTemplate(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, exp, got)
+		m.AssertExpectations(t)
+
+		hash, hErr := cache.HashString(TEMPLATE.String() + strconv.Itoa(int(exp.TemplateID)))
+		require.NoError(t, hErr)
+		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Content)), c.Size())
-		m.AssertExpectations(t)
 	})
 }
 
@@ -528,9 +561,13 @@ func TestCachedQueriesUpdateCertificate(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, exp, got)
+		m.AssertExpectations(t)
+
+		hash, hErr := cache.HashString(CERTIFICATE.String() + exp.CertificateID)
+		require.NoError(t, hErr)
+		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.CertificateID)), c.Size())
-		m.AssertExpectations(t)
 	})
 	t.Run("if certificate update failed cache should be intact", func(t *testing.T) {
 		cq, c, m := prepCachedQueries(t)
@@ -604,9 +641,13 @@ func TestCachedQueriesUpdateCourse(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, exp, got)
+		m.AssertExpectations(t)
+
+		hash, hErr := cache.HashString(COURSE.String() + strconv.Itoa(int(exp.CourseID)))
+		require.NoError(t, hErr)
+		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
-		m.AssertExpectations(t)
 	})
 	t.Run("if course update failed cache should be intact", func(t *testing.T) {
 		cq, c, m := prepCachedQueries(t)
@@ -680,9 +721,13 @@ func TestCachedQueriesUpdateStudent(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, exp, got)
+		m.AssertExpectations(t)
+
+		hash, hErr := cache.HashString(STUDENT.String() + strconv.Itoa(int(exp.StudentID)))
+		require.NoError(t, hErr)
+		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
-		m.AssertExpectations(t)
 	})
 	t.Run("if student update failed cache should be intact", func(t *testing.T) {
 		cq, c, m := prepCachedQueries(t)
@@ -756,9 +801,13 @@ func TestCachedQueriesUpdateTemplate(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, exp, got)
+		m.AssertExpectations(t)
+
+		hash, hErr := cache.HashString(TEMPLATE.String() + strconv.Itoa(int(exp.TemplateID)))
+		require.NoError(t, hErr)
+		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Content)), c.Size())
-		m.AssertExpectations(t)
 	})
 	t.Run("if student update failed cache should be intact", func(t *testing.T) {
 		cq, c, m := prepCachedQueries(t)

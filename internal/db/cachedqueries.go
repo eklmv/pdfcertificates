@@ -247,7 +247,7 @@ func (cq *CachedQueries) GetStudent(ctx context.Context, db DBTX, studentID int3
 
 	student, err := cq.Querier.GetStudent(ctx, db, studentID)
 	if err == nil {
-		cq.addToCache(COURSE, strconv.Itoa(int(studentID)), student)
+		cq.addToCache(STUDENT, strconv.Itoa(int(studentID)), student)
 	}
 
 	return student, err
