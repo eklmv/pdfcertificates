@@ -26,7 +26,7 @@
           };
         test =
           pkgs.mkShell {
-            packages = with pkgs; [ go gnumake go-migrate ];
+            packages = with pkgs; [ go gnumake ];
           };
       });
     };
