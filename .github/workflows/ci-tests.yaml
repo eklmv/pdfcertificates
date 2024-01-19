@@ -40,6 +40,15 @@ jobs:
           --health-interval 1s
           --health-timeout 1s
           --health-retries 10
+      gotenberg:
+        image: ${{ fromJSON(needs.test_env.outputs.json).GOTENBERG_IMAGE }}
+        ports:
+          - ${{ fromJSON(needs.test_env.outputs.json).GOTENBERG_TEST_PORT }}:3000
+        options: >-
+          --health-cmd "curl -s --request GET 'http://127.0.0.1:3000/health' | grep -q 'chromium\":{\"status\":\"up'"
+          --health-interval 1s
+          --health-timeout 1s
+          --health-retries 10
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -69,3 +78,5 @@ jobs:
         run: make test.unit.all
       - name: db integration tests
         run: make -t test.it.db.all
+      - name: gotenberg integration tests
+        run: make -t test.it.gotenberg.all
