@@ -44,12 +44,7 @@ func NewCachedQueries(cache cache.Cache[uint32, cachedResponse], querier Querier
 }
 
 func (cq *CachedQueries) addToCache(p prefix, str string, value any) {
-	hash, err := cache.HashString(p.String() + str)
-	if err != nil {
-		slog.Error("skip caching", slog.String("prefix", p.String()),
-			slog.String("str", str), slog.Any("error", err))
-		return
-	}
+	hash := cache.HashString(p.String() + str)
 	cq.c.Add(hash, cachedResponse{
 		value: value,
 		size:  cache.SizeOf(value),
@@ -57,13 +52,9 @@ func (cq *CachedQueries) addToCache(p prefix, str string, value any) {
 }
 
 func (cq *CachedQueries) invalidateCache(p prefix, str string) {
-	hash, err := cache.HashString(p.String() + str)
-	if err == nil && cq.c.Contains(hash) {
+	hash := cache.HashString(p.String() + str)
+	if cq.c.Contains(hash) {
 		cq.c.Remove(hash)
-	}
-	if err != nil {
-		slog.Error("cache can be invalid, force purge", slog.Any("error", err))
-		cq.c.Purge()
 	}
 }
 
@@ -118,11 +109,7 @@ func (cq *CachedQueries) invalidateCertificates(ctx context.Context, db DBTX, p 
 }
 
 func (cq *CachedQueries) hitCache(p prefix, str string) (v any, ok bool) {
-	hash, err := cache.HashString(p.String() + str)
-	if err != nil {
-		slog.Error("skip cache hit", slog.Any("error", err))
-		return
-	}
+	hash := cache.HashString(p.String() + str)
 	if cq.c.Contains(hash) {
 		r, ok := cq.c.Get(hash)
 		slog.Info("successful cache hit", slog.String("hashed string", p.String()+str),

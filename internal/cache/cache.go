@@ -1,9 +1,7 @@
 package cache
 
 import (
-	"fmt"
 	"hash/fnv"
-	"log/slog"
 	"reflect"
 	"unsafe"
 )
@@ -30,14 +28,10 @@ type Cacheable interface {
 	Size() uint64
 }
 
-func HashString(str string) (hash uint32, err error) {
+func HashString(str string) uint32 {
 	hasher := fnv.New32a()
-	_, err = hasher.Write([]byte(str))
-	if err != nil {
-		slog.Error("failed to hash string", slog.String("string", str), slog.Any("error", err))
-		return hash, fmt.Errorf("failed to hash string %s: %w", str, err)
-	}
-	return hasher.Sum32(), err
+	hasher.Write([]byte(str))
+	return hasher.Sum32()
 }
 
 // TODO: add correct calculation for more complex types

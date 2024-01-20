@@ -50,8 +50,7 @@ func TestCachedQueriesCreateCertificate(t *testing.T) {
 		assert.Equal(t, exp, got)
 		m.AssertExpectations(t)
 
-		hash, hErr := cache.HashString(prefCert.String() + exp.CertificateID)
-		require.NoError(t, hErr)
+		hash := cache.HashString(prefCert.String() + exp.CertificateID)
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.CertificateID)), c.Size())
@@ -74,8 +73,7 @@ func TestCachedQueriesCreateCourse(t *testing.T) {
 		assert.Equal(t, exp, got)
 		m.AssertExpectations(t)
 
-		hash, hErr := cache.HashString(prefCourse.String() + strconv.Itoa(int(exp.CourseID)))
-		require.NoError(t, hErr)
+		hash := cache.HashString(prefCourse.String() + strconv.Itoa(int(exp.CourseID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
@@ -98,8 +96,7 @@ func TestCachedQueriesCreateStudent(t *testing.T) {
 		assert.Equal(t, exp, got)
 		m.AssertExpectations(t)
 
-		hash, hErr := cache.HashString(prefStudent.String() + strconv.Itoa(int(exp.StudentID)))
-		require.NoError(t, hErr)
+		hash := cache.HashString(prefStudent.String() + strconv.Itoa(int(exp.StudentID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
@@ -122,8 +119,7 @@ func TestCachedQueriesCreateTemplate(t *testing.T) {
 		assert.Equal(t, exp, got)
 		m.AssertExpectations(t)
 
-		hash, hErr := cache.HashString(prefTmpl.String() + strconv.Itoa(int(exp.TemplateID)))
-		require.NoError(t, hErr)
+		hash := cache.HashString(prefTmpl.String() + strconv.Itoa(int(exp.TemplateID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Content)), c.Size())
@@ -408,8 +404,7 @@ func TestCachedQueriesGetCertificate(t *testing.T) {
 		assert.Equal(t, exp, got)
 		m.AssertExpectations(t)
 
-		hash, hErr := cache.HashString(prefCert.String() + exp.CertificateID)
-		require.NoError(t, hErr)
+		hash := cache.HashString(prefCert.String() + exp.CertificateID)
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.CertificateID)), c.Size())
@@ -449,8 +444,7 @@ func TestCachedQueriesGetCourse(t *testing.T) {
 		assert.Equal(t, exp, got)
 		m.AssertExpectations(t)
 
-		hash, hErr := cache.HashString(prefCourse.String() + strconv.Itoa(int(exp.CourseID)))
-		require.NoError(t, hErr)
+		hash := cache.HashString(prefCourse.String() + strconv.Itoa(int(exp.CourseID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
@@ -490,8 +484,7 @@ func TestCachedQueriesGetStudent(t *testing.T) {
 		assert.Equal(t, exp, got)
 		m.AssertExpectations(t)
 
-		hash, hErr := cache.HashString(prefStudent.String() + strconv.Itoa(int(exp.StudentID)))
-		require.NoError(t, hErr)
+		hash := cache.HashString(prefStudent.String() + strconv.Itoa(int(exp.StudentID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
@@ -531,8 +524,7 @@ func TestCachedQueriesGetTemplate(t *testing.T) {
 		assert.Equal(t, exp, got)
 		m.AssertExpectations(t)
 
-		hash, hErr := cache.HashString(prefTmpl.String() + strconv.Itoa(int(exp.TemplateID)))
-		require.NoError(t, hErr)
+		hash := cache.HashString(prefTmpl.String() + strconv.Itoa(int(exp.TemplateID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Content)), c.Size())
@@ -563,8 +555,7 @@ func TestCachedQueriesUpdateCertificate(t *testing.T) {
 		assert.Equal(t, exp, got)
 		m.AssertExpectations(t)
 
-		hash, hErr := cache.HashString(prefCert.String() + exp.CertificateID)
-		require.NoError(t, hErr)
+		hash := cache.HashString(prefCert.String() + exp.CertificateID)
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.CertificateID)), c.Size())
@@ -643,8 +634,7 @@ func TestCachedQueriesUpdateCourse(t *testing.T) {
 		assert.Equal(t, exp, got)
 		m.AssertExpectations(t)
 
-		hash, hErr := cache.HashString(prefCourse.String() + strconv.Itoa(int(exp.CourseID)))
-		require.NoError(t, hErr)
+		hash := cache.HashString(prefCourse.String() + strconv.Itoa(int(exp.CourseID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
@@ -723,8 +713,7 @@ func TestCachedQueriesUpdateStudent(t *testing.T) {
 		assert.Equal(t, exp, got)
 		m.AssertExpectations(t)
 
-		hash, hErr := cache.HashString(prefStudent.String() + strconv.Itoa(int(exp.StudentID)))
-		require.NoError(t, hErr)
+		hash := cache.HashString(prefStudent.String() + strconv.Itoa(int(exp.StudentID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
@@ -803,8 +792,7 @@ func TestCachedQueriesUpdateTemplate(t *testing.T) {
 		assert.Equal(t, exp, got)
 		m.AssertExpectations(t)
 
-		hash, hErr := cache.HashString(prefTmpl.String() + strconv.Itoa(int(exp.TemplateID)))
-		require.NoError(t, hErr)
+		hash := cache.HashString(prefTmpl.String() + strconv.Itoa(int(exp.TemplateID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Content)), c.Size())
