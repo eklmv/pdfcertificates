@@ -45,10 +45,11 @@ func NewCachedQueries(cache cache.Cache[uint32, cachedResponse], querier Querier
 
 func (cq *CachedQueries) addToCache(p prefix, str string, value any) {
 	hash := cache.HashString(p.String() + str)
-	cq.c.Add(hash, cachedResponse{
+	r := cachedResponse{
 		value: value,
-		size:  cache.SizeOf(value),
-	})
+	}
+	r.size = cache.SizeOf(r)
+	cq.c.Add(hash, r)
 }
 
 func (cq *CachedQueries) invalidateCache(p prefix, str string) {

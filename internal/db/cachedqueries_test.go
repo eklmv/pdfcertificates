@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"testing"
 	"time"
-	"unsafe"
 
 	"github.com/eklmv/pdfcertificates/internal/cache"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -53,7 +52,7 @@ func TestCachedQueriesCreateCertificate(t *testing.T) {
 		hash := cache.HashString(prefCert.String() + exp.CertificateID)
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.CertificateID)), c.Size())
+		assert.Equal(t, exp, c.Values()[0].value)
 	})
 }
 
@@ -76,7 +75,7 @@ func TestCachedQueriesCreateCourse(t *testing.T) {
 		hash := cache.HashString(prefCourse.String() + strconv.Itoa(int(exp.CourseID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
+		assert.Equal(t, exp, c.Values()[0].value)
 	})
 }
 
@@ -99,7 +98,7 @@ func TestCachedQueriesCreateStudent(t *testing.T) {
 		hash := cache.HashString(prefStudent.String() + strconv.Itoa(int(exp.StudentID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
+		assert.Equal(t, exp, c.Values()[0].value)
 	})
 }
 
@@ -122,7 +121,7 @@ func TestCachedQueriesCreateTemplate(t *testing.T) {
 		hash := cache.HashString(prefTmpl.String() + strconv.Itoa(int(exp.TemplateID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Content)), c.Size())
+		assert.Equal(t, exp, c.Values()[0].value)
 	})
 }
 
@@ -180,7 +179,7 @@ func TestCachedQueriesDeleteCertificate(t *testing.T) {
 		assert.ErrorContains(t, err, "failed")
 		assert.Empty(t, got)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(cert))+uint64(len(cert.CertificateID)), c.Size())
+		assert.Equal(t, cert, c.Values()[0].value)
 		m.AssertExpectations(t)
 	})
 }
@@ -223,7 +222,7 @@ func TestCachedQueriesDeleteCourse(t *testing.T) {
 		assert.ErrorContains(t, err, "failed")
 		assert.Empty(t, got)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(course))+uint64(len(course.Data)), c.Size())
+		assert.Equal(t, course, c.Values()[0].value)
 		m.AssertExpectations(t)
 	})
 }
@@ -306,8 +305,8 @@ func TestCachedQueriesDeleteStudent(t *testing.T) {
 		assert.ErrorContains(t, err, "failed")
 		assert.Empty(t, got)
 		assert.Equal(t, uint64(2), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(student)+unsafe.Sizeof(cert))+
-			uint64(len(student.Data)+len(cert.CertificateID)), c.Size())
+		assert.Equal(t, student, c.Values()[0].value)
+		assert.Equal(t, cert, c.Values()[1].value)
 		m.AssertExpectations(t)
 	})
 }
@@ -350,7 +349,7 @@ func TestCachedQueriesDeleteTemplate(t *testing.T) {
 		assert.ErrorContains(t, err, "failed")
 		assert.Empty(t, got)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(tmpl))+uint64(len(tmpl.Content)), c.Size())
+		assert.Equal(t, tmpl, c.Values()[0].value)
 		m.AssertExpectations(t)
 	})
 }
@@ -407,7 +406,7 @@ func TestCachedQueriesGetCertificate(t *testing.T) {
 		hash := cache.HashString(prefCert.String() + exp.CertificateID)
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.CertificateID)), c.Size())
+		assert.Equal(t, exp, c.Values()[0].value)
 	})
 }
 
@@ -447,7 +446,7 @@ func TestCachedQueriesGetCourse(t *testing.T) {
 		hash := cache.HashString(prefCourse.String() + strconv.Itoa(int(exp.CourseID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
+		assert.Equal(t, exp, c.Values()[0].value)
 	})
 }
 
@@ -487,7 +486,7 @@ func TestCachedQueriesGetStudent(t *testing.T) {
 		hash := cache.HashString(prefStudent.String() + strconv.Itoa(int(exp.StudentID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
+		assert.Equal(t, exp, c.Values()[0].value)
 	})
 }
 
@@ -527,7 +526,7 @@ func TestCachedQueriesGetTemplate(t *testing.T) {
 		hash := cache.HashString(prefTmpl.String() + strconv.Itoa(int(exp.TemplateID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Content)), c.Size())
+		assert.Equal(t, exp, c.Values()[0].value)
 	})
 }
 
@@ -558,7 +557,7 @@ func TestCachedQueriesUpdateCertificate(t *testing.T) {
 		hash := cache.HashString(prefCert.String() + exp.CertificateID)
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.CertificateID)), c.Size())
+		assert.Equal(t, exp, c.Values()[0].value)
 	})
 	t.Run("if certificate update failed cache should be intact", func(t *testing.T) {
 		cq, c, m := prepCachedQueries(t)
@@ -591,7 +590,7 @@ func TestCachedQueriesUpdateCertificate(t *testing.T) {
 		assert.ErrorContains(t, err, "failed")
 		assert.Empty(t, got)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(cert))+uint64(len(cert.CertificateID)), c.Size())
+		assert.Equal(t, cert, c.Values()[0].value)
 		m.AssertExpectations(t)
 	})
 }
@@ -637,7 +636,7 @@ func TestCachedQueriesUpdateCourse(t *testing.T) {
 		hash := cache.HashString(prefCourse.String() + strconv.Itoa(int(exp.CourseID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
+		assert.Equal(t, exp, c.Values()[0].value)
 	})
 	t.Run("if course update failed cache should be intact", func(t *testing.T) {
 		cq, c, m := prepCachedQueries(t)
@@ -670,7 +669,7 @@ func TestCachedQueriesUpdateCourse(t *testing.T) {
 		assert.ErrorContains(t, err, "failed")
 		assert.Empty(t, got)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(cert))+uint64(len(cert.CertificateID)), c.Size())
+		assert.Equal(t, cert, c.Values()[0].value)
 		m.AssertExpectations(t)
 	})
 }
@@ -716,7 +715,7 @@ func TestCachedQueriesUpdateStudent(t *testing.T) {
 		hash := cache.HashString(prefStudent.String() + strconv.Itoa(int(exp.StudentID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Data)), c.Size())
+		assert.Equal(t, exp, c.Values()[0].value)
 	})
 	t.Run("if student update failed cache should be intact", func(t *testing.T) {
 		cq, c, m := prepCachedQueries(t)
@@ -749,7 +748,7 @@ func TestCachedQueriesUpdateStudent(t *testing.T) {
 		assert.ErrorContains(t, err, "failed")
 		assert.Empty(t, got)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(cert))+uint64(len(cert.CertificateID)), c.Size())
+		assert.Equal(t, cert, c.Values()[0].value)
 		m.AssertExpectations(t)
 	})
 }
@@ -795,7 +794,7 @@ func TestCachedQueriesUpdateTemplate(t *testing.T) {
 		hash := cache.HashString(prefTmpl.String() + strconv.Itoa(int(exp.TemplateID)))
 		assert.Contains(t, c.Keys(), hash)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(exp))+uint64(len(exp.Content)), c.Size())
+		assert.Equal(t, exp, c.Values()[0].value)
 	})
 	t.Run("if student update failed cache should be intact", func(t *testing.T) {
 		cq, c, m := prepCachedQueries(t)
@@ -828,7 +827,7 @@ func TestCachedQueriesUpdateTemplate(t *testing.T) {
 		assert.ErrorContains(t, err, "failed")
 		assert.Empty(t, got)
 		assert.Equal(t, uint64(1), c.Len())
-		assert.Equal(t, uint64(unsafe.Sizeof(cert))+uint64(len(cert.CertificateID)), c.Size())
+		assert.Equal(t, cert, c.Values()[0].value)
 		m.AssertExpectations(t)
 	})
 }
