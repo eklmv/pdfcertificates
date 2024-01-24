@@ -27,8 +27,10 @@ func TestGotenbergRender(t *testing.T) {
 	require.NoError(t, err)
 	golden, err := os.ReadFile(testData + "out.pdf")
 	require.NoError(t, err)
-	dates := regexp.MustCompile("/CreationDate.*\n/ModDate.*\n")
+	dates := regexp.MustCompile(`/CreationDate.*\n/ModDate.*\n`)
+	node := regexp.MustCompile(`(node\d+)`)
 	exp := dates.ReplaceAllString(string(golden), "")
+	exp = node.ReplaceAllString(exp, "")
 
 	g := NewGotenbergRender("http://" + host + ":" + port)
 	in := bytes.NewReader(html)
@@ -38,6 +40,7 @@ func TestGotenbergRender(t *testing.T) {
 
 	require.NoError(t, err)
 	got := dates.ReplaceAllString(out.String(), "")
+	got = node.ReplaceAllString(got, "")
 	assert.NotEmpty(t, got)
 	assert.Equal(t, exp, got)
 }
