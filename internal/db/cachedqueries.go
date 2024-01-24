@@ -113,7 +113,7 @@ func (cq *CachedQueries) hitCache(p prefix, str string) (v any, ok bool) {
 	hash := cache.HashString(p.String() + str)
 	if cq.c.Contains(hash) {
 		r, ok := cq.c.Get(hash)
-		slog.Info("successful cache hit", slog.String("hashed string", p.String()+str),
+		slog.Info("successful queries cache hit", slog.String("hashed string", p.String()+str),
 			slog.Any("value", r.value), slog.Bool("ok", ok))
 		return r.value, ok
 	}
