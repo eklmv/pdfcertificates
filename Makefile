@@ -34,34 +34,6 @@ docker.db.down:
 .PHONY: docker.db.restart
 docker.db.restart: docker.db.down docker.db.up
 
-.PHONY: docker.gotenberg.create
-docker.gotenberg.create:
-	ps=$$(docker ps -a -q -f "name=${GOTENBERG_TEST_CONTAINER}")
-	if [ -z $$ps ]; then
-		docker create --name ${GOTENBERG_TEST_CONTAINER} -p ${GOTENBERG_TEST_PORT}:3000 ${GOTENBERG_IMAGE} >/dev/null \
-		&& echo "${GOTENBERG_TEST_CONTAINER} container created"
-	else
-		echo "${GOTENBERG_TEST_CONTAINER} container already exists"
-	fi
-
-.PHONY: docker.gotenberg.rm
-docker.gotenberg.rm: docker.gotenberg.down
-	docker rm ${GOTENBERG_TEST_CONTAINER} >/dev/null \
-	&& echo "${GOTENBERG_TEST_CONTAINER} container removed"
-
-.PHONY: docker.gotenberg.up
-docker.gotenberg.up: docker.gotenberg.create
-	docker start ${GOTENBERG_TEST_CONTAINER} >/dev/null \
-	&& echo "${GOTENBERG_TEST_CONTAINER} container started"
-
-.PHONY: docker.gotenberg.down
-docker.gotenberg.down:
-	docker stop ${GOTENBERG_TEST_CONTAINER} >/dev/null \
-	&& echo "${GOTENBERG_TEST_CONTAINER} container stopped"
-
-.PHONY: docker.gotenberg.restart
-docker.gotenberg.restart: docker.gotenberg.down docker.gotenberg.up
-
 .PHONY: db.is_ready
 db.is_ready:
 	echo "waiting for ${DB_TEST_CONTAINER} container"
@@ -110,6 +82,34 @@ sqlc:  migrate.up
 	sqlc generate -f db/sqlc.yaml \
 	&& echo "sqlc generate done"
 
+.PHONY: docker.gotenberg.create
+docker.gotenberg.create:
+	ps=$$(docker ps -a -q -f "name=${GOTENBERG_TEST_CONTAINER}")
+	if [ -z $$ps ]; then
+		docker create --name ${GOTENBERG_TEST_CONTAINER} -p ${GOTENBERG_TEST_PORT}:3000 ${GOTENBERG_IMAGE} >/dev/null \
+		&& echo "${GOTENBERG_TEST_CONTAINER} container created"
+	else
+		echo "${GOTENBERG_TEST_CONTAINER} container already exists"
+	fi
+
+.PHONY: docker.gotenberg.rm
+docker.gotenberg.rm: docker.gotenberg.down
+	docker rm ${GOTENBERG_TEST_CONTAINER} >/dev/null \
+	&& echo "${GOTENBERG_TEST_CONTAINER} container removed"
+
+.PHONY: docker.gotenberg.up
+docker.gotenberg.up: docker.gotenberg.create
+	docker start ${GOTENBERG_TEST_CONTAINER} >/dev/null \
+	&& echo "${GOTENBERG_TEST_CONTAINER} container started"
+
+.PHONY: docker.gotenberg.down
+docker.gotenberg.down:
+	docker stop ${GOTENBERG_TEST_CONTAINER} >/dev/null \
+	&& echo "${GOTENBERG_TEST_CONTAINER} container stopped"
+
+.PHONY: docker.gotenberg.restart
+docker.gotenberg.restart: docker.gotenberg.down docker.gotenberg.up
+
 .PHONY: gotenberg.is_ready
 gotenberg.is_ready:
 	echo "waiting for ${GOTENBERG_TEST_CONTAINER} container"
@@ -117,7 +117,7 @@ gotenberg.is_ready:
 	&& echo "${GOTENBERG_TEST_CONTAINER} container is ready"
 
 .PHONY: test.cover
-test.cover: docker.db.up db.is_ready
+test.cover: docker.db.up db.is_ready docker.gotenberg.up gotenberg.is_ready
 	mkdir -p out
 	go test -coverprofile out/coverage.out -tags integration ./...
 
@@ -137,7 +137,6 @@ test.unit:
 	else
 		go test ./... -timeout 30s -run=$(run)
 	fi
-
 
 .PHONY: test.it.db.all
 test.it.db.all: docker.db.up db.is_ready
@@ -159,3 +158,7 @@ test.it.gotenberg.all: docker.gotenberg.up gotenberg.is_ready
 .PHONY: mock
 mock:
 	mockery --config test/mockery.yaml
+
+.PHONY: clean
+clean:
+	rm -rf out
