@@ -7,3 +7,6 @@ packages:
   github.com/eklmv/pdfcertificates/internal/db:
     interfaces:
       Querier:
+  github.com/eklmv/pdfcertificates/internal/storage:
+    interfaces:
+      Storage:
