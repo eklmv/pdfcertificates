@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS certificate (
     certificate_id char(8) PRIMARY KEY,
     template_id integer NOT NULL REFERENCES template ON DELETE RESTRICT,
     course_id integer NOT NULL REFERENCES course ON DELETE RESTRICT,
-    student_id integer NOT NULL REFERENCES student ON DELETE CASCADE,
+    student_id integer NOT NULL REFERENCES student ON DELETE RESTRICT,
     timestamp timestamptz NOT NULL DEFAULT now(),
     data jsonb NOT NULL DEFAULT '{}'::jsonb
 );

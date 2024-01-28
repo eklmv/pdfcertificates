@@ -172,7 +172,6 @@ func (cq *CachedQueries) DeleteStudent(ctx context.Context, db DBTX, studentID i
 	student, err := cq.Querier.DeleteStudent(ctx, db, studentID)
 	if err == nil {
 		cq.invalidateCache(prefStudent, strconv.Itoa(int(studentID)))
-		cq.invalidateCertificates(ctx, db, prefStudent, studentID)
 	}
 	return student, err
 }

@@ -228,41 +228,18 @@ func TestCachedQueriesDeleteCourse(t *testing.T) {
 }
 
 func TestCachedQueriesDeleteStudent(t *testing.T) {
-	t.Run("if student successfully deleted it and all linked certificates should be removed from cache", func(t *testing.T) {
+	t.Run("if student successfully deleted it should be removed from cache", func(t *testing.T) {
 		cq, c, m := prepCachedQueries(t)
 		ctx := context.Background()
 		exp := Student{
 			StudentID: 0,
 			Data:      []byte("{}"),
 		}
-		cert := Certificate{
-			CertificateID: "00000000",
-			TemplateID:    0,
-			CourseID:      0,
-			StudentID:     exp.StudentID,
-			Timestamp: pgtype.Timestamptz{
-				Time:             time.Now(),
-				InfinityModifier: 0,
-				Valid:            true,
-			},
-			Data: []byte{},
-		}
 		m.EXPECT().CreateStudent(ctx, nil, exp.Data).Return(exp, nil).Once()
 		_, err := cq.CreateStudent(ctx, nil, exp.Data)
 		require.NoError(t, err)
 
-		m.EXPECT().CreateCertificate(ctx, nil, CreateCertificateParams{}).Return(cert, nil).Once()
-		_, err = cq.CreateCertificate(ctx, nil, CreateCertificateParams{})
-		require.NoError(t, err)
-		require.Equal(t, uint64(2), c.Len())
-
 		m.EXPECT().DeleteStudent(ctx, nil, exp.StudentID).Return(exp, nil).Once()
-		m.EXPECT().ListCertificatesByStudentLen(ctx, nil, exp.StudentID).Return(1, nil).Once()
-		m.EXPECT().ListCertificatesByStudent(ctx, nil, ListCertificatesByStudentParams{
-			StudentID: exp.StudentID,
-			Limit:     1,
-			Offset:    0,
-		}).Return([]Certificate{cert}, nil).Once()
 		got, err := cq.DeleteStudent(ctx, nil, exp.StudentID)
 
 		assert.NoError(t, err)
@@ -278,35 +255,17 @@ func TestCachedQueriesDeleteStudent(t *testing.T) {
 			StudentID: 0,
 			Data:      []byte("{}"),
 		}
-		cert := Certificate{
-			CertificateID: "00000000",
-			TemplateID:    0,
-			CourseID:      0,
-			StudentID:     student.StudentID,
-			Timestamp: pgtype.Timestamptz{
-				Time:             time.Now(),
-				InfinityModifier: 0,
-				Valid:            true,
-			},
-			Data: []byte{},
-		}
 		m.EXPECT().CreateStudent(ctx, nil, student.Data).Return(student, nil).Once()
 		_, err := cq.CreateStudent(ctx, nil, student.Data)
 		require.NoError(t, err)
-
-		m.EXPECT().CreateCertificate(ctx, nil, CreateCertificateParams{}).Return(cert, nil).Once()
-		_, err = cq.CreateCertificate(ctx, nil, CreateCertificateParams{})
-		require.NoError(t, err)
-		require.Equal(t, uint64(2), c.Len())
 
 		m.EXPECT().DeleteStudent(ctx, nil, student.StudentID).Return(Student{}, fmt.Errorf("failed")).Once()
 		got, err := cq.DeleteStudent(ctx, nil, student.StudentID)
 
 		assert.ErrorContains(t, err, "failed")
 		assert.Empty(t, got)
-		assert.Equal(t, uint64(2), c.Len())
+		assert.Equal(t, uint64(1), c.Len())
 		assert.Equal(t, student, c.Values()[0].value)
-		assert.Equal(t, cert, c.Values()[1].value)
 		m.AssertExpectations(t)
 	})
 }
