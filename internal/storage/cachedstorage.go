@@ -61,13 +61,13 @@ func (cs *CachedStorage) Get(id string, timestamp time.Time) (cert []byte, err e
 	return
 }
 
-func (cs *CachedStorage) Delete(id string, timestamp time.Time) {
+func (cs *CachedStorage) Delete(id string) {
 	hash := cache.HashString(id)
-	cf, ok := cs.c.Peek(hash)
-	if ok && (cf.timestamp.Equal(timestamp) || cf.timestamp.Before(timestamp)) {
+	_, ok := cs.c.Peek(hash)
+	if ok {
 		cs.c.Remove(hash)
 	}
-	cs.Storage.Delete(id, timestamp)
+	cs.Storage.Delete(id)
 }
 
 func (cs *CachedStorage) Exists(id string, timestamp time.Time) bool {

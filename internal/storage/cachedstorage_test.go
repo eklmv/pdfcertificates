@@ -109,52 +109,13 @@ func TestCachedStorageDelete(t *testing.T) {
 		err := cs.Add(id, cert, timestamp)
 		require.NoError(t, err)
 
-		m.EXPECT().Delete(id, timestamp).Once()
-		cs.Delete(id, timestamp)
+		m.EXPECT().Delete(id).Once()
+		cs.Delete(id)
 
 		assert.Empty(t, cs.c.Len())
 		assert.Empty(t, cs.c.Size())
 		assert.Empty(t, cs.c.Keys())
 		assert.Empty(t, cs.c.Values())
-		m.AssertExpectations(t)
-	})
-	t.Run("remove cached certificate if requested timestamp newer and make underlying call", func(t *testing.T) {
-		id := "00000000"
-		cert := []byte("Hello, world!")
-		timestamp := time.Now()
-		newer_timestamp := timestamp.Add(1 * time.Hour)
-		m := NewMockStorage(t)
-		cs := NewCachedStorage(m)
-		m.EXPECT().Add(id, cert, timestamp).Return(nil).Once()
-		err := cs.Add(id, cert, timestamp)
-		require.NoError(t, err)
-
-		m.EXPECT().Delete(id, newer_timestamp).Once()
-		cs.Delete(id, newer_timestamp)
-
-		assert.Empty(t, cs.c.Len())
-		assert.Empty(t, cs.c.Size())
-		assert.Empty(t, cs.c.Keys())
-		assert.Empty(t, cs.c.Values())
-		m.AssertExpectations(t)
-	})
-	t.Run("do not affect cache if requested timestamp older and make underlying call", func(t *testing.T) {
-		id := "00000000"
-		cert := []byte("Hello, world!")
-		timestamp := time.Now()
-		older_timestamp := timestamp.Add(-1 * time.Hour)
-		m := NewMockStorage(t)
-		cs := NewCachedStorage(m)
-		m.EXPECT().Add(id, cert, timestamp).Return(nil).Once()
-		err := cs.Add(id, cert, timestamp)
-		require.NoError(t, err)
-
-		m.EXPECT().Delete(id, older_timestamp).Once()
-		cs.Delete(id, older_timestamp)
-
-		assert.Equal(t, uint64(1), cs.c.Len())
-		assert.Equal(t, cache.HashString(id), cs.c.Keys()[0])
-		assert.Equal(t, cert, cs.c.Values()[0].file)
 		m.AssertExpectations(t)
 	})
 }

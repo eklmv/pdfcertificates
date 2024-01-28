@@ -135,10 +135,10 @@ func (fs *FileSystem) Get(id string, timestamp time.Time) (cert []byte, err erro
 	return nil, err
 }
 
-func (fs *FileSystem) Delete(id string, timestamp time.Time) {
+func (fs *FileSystem) Delete(id string) {
 	hash := cache.HashString(id)
-	cl, ok := fs.c.Peek(hash)
-	if ok && (cl.timestamp.Equal(timestamp) || cl.timestamp.Before(timestamp)) {
+	_, ok := fs.c.Peek(hash)
+	if ok {
 		fs.c.Remove(hash)
 	}
 }

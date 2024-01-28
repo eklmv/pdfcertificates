@@ -141,44 +141,10 @@ func TestFileSystemDelete(t *testing.T) {
 		require.NoError(t, err)
 		require.FileExists(t, fsEnsureTrailingSlash(path)+toFileName(id, timestamp))
 
-		fs.Delete(id, timestamp)
+		fs.Delete(id)
 
 		require.NoError(t, err)
 		assert.NoFileExists(t, fsEnsureTrailingSlash(path)+toFileName(id, timestamp))
-	})
-	t.Run("delete stored certificate file if requested timestamp is newer", func(t *testing.T) {
-		path := testDir(t)
-		cert := []byte("Hello, world!")
-		id := "00000000"
-		timestamp := time.Now()
-		newer_timestamp := timestamp.Add(1 * time.Hour)
-		fs, err := NewFileSystem(path)
-		require.NoError(t, err)
-		err = fs.Add(id, cert, timestamp)
-		require.NoError(t, err)
-		require.FileExists(t, fsEnsureTrailingSlash(path)+toFileName(id, timestamp))
-
-		fs.Delete(id, newer_timestamp)
-
-		require.NoError(t, err)
-		assert.NoFileExists(t, fsEnsureTrailingSlash(path)+toFileName(id, timestamp))
-	})
-	t.Run("should not delete stored certificate if requested timestamp is older", func(t *testing.T) {
-		path := testDir(t)
-		cert := []byte("Hello, world!")
-		id := "00000000"
-		timestamp := time.Now()
-		older_timestamp := timestamp.Add(-1 * time.Hour)
-		fs, err := NewFileSystem(path)
-		require.NoError(t, err)
-		err = fs.Add(id, cert, timestamp)
-		require.NoError(t, err)
-		require.FileExists(t, fsEnsureTrailingSlash(path)+toFileName(id, timestamp))
-
-		fs.Delete(id, older_timestamp)
-
-		require.NoError(t, err)
-		assert.FileExists(t, fsEnsureTrailingSlash(path)+toFileName(id, timestamp))
 	})
 }
 

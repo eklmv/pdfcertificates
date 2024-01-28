@@ -69,9 +69,9 @@ func (_c *MockStorage_Add_Call) RunAndReturn(run func(string, []byte, time.Time)
 	return _c
 }
 
-// Delete provides a mock function with given fields: id, timestamp
-func (_m *MockStorage) Delete(id string, timestamp time.Time) {
-	_m.Called(id, timestamp)
+// Delete provides a mock function with given fields: id
+func (_m *MockStorage) Delete(id string) {
+	_m.Called(id)
 }
 
 // MockStorage_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
@@ -81,14 +81,13 @@ type MockStorage_Delete_Call struct {
 
 // Delete is a helper method to define mock.On call
 //   - id string
-//   - timestamp time.Time
-func (_e *MockStorage_Expecter) Delete(id interface{}, timestamp interface{}) *MockStorage_Delete_Call {
-	return &MockStorage_Delete_Call{Call: _e.mock.On("Delete", id, timestamp)}
+func (_e *MockStorage_Expecter) Delete(id interface{}) *MockStorage_Delete_Call {
+	return &MockStorage_Delete_Call{Call: _e.mock.On("Delete", id)}
 }
 
-func (_c *MockStorage_Delete_Call) Run(run func(id string, timestamp time.Time)) *MockStorage_Delete_Call {
+func (_c *MockStorage_Delete_Call) Run(run func(id string)) *MockStorage_Delete_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string), args[1].(time.Time))
+		run(args[0].(string))
 	})
 	return _c
 }
@@ -98,7 +97,7 @@ func (_c *MockStorage_Delete_Call) Return() *MockStorage_Delete_Call {
 	return _c
 }
 
-func (_c *MockStorage_Delete_Call) RunAndReturn(run func(string, time.Time)) *MockStorage_Delete_Call {
+func (_c *MockStorage_Delete_Call) RunAndReturn(run func(string)) *MockStorage_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
